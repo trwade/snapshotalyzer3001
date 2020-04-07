@@ -78,10 +78,18 @@ def create_snapshot(project):
     instances = filter_instances(project)
 
     for i in instances:
+        i.stop()
+        i.wait_until_stopped()
         for v in i.volumes.all():
             print("creating snapshot of {0}".format(v.id))
             v.create_snapshot(Description = "Created by Twade to test")
-    return    
+        print("Starting {0}...".format(i.id))
+        i.start()
+        i.wait_until_running
+
+    print('Snapshot Complete')
+        
+    return
 
 @instances.command('list')
 @click.option('--project', default=None, help='Only instances for project')
